@@ -1,4 +1,4 @@
-import AlunosModel from '../models/AlunoModel.js';
+import AlunoModel from '../models/AlunoModel.js';
 
 export const criar = async (req, res) => {
     try {
@@ -18,7 +18,7 @@ export const criar = async (req, res) => {
             return res.status(400).json({ error: 'O campo "materia" é obrigatório!' });
          }
 
-        const aluno = new AlunosModel({ nome, turma, materia});
+        const aluno = new AlunoModel({ nome, turma, materia});
         const data = await aluno.criar();
 
         return res.status(201).json({ message: 'Registro criado com sucesso!', data });
@@ -30,7 +30,7 @@ export const criar = async (req, res) => {
 
 export const buscarTodos = async (req, res) => {
     try {
-        const registros = await AlunosModel.buscarTodos(req.query);
+        const registros = await AlunoModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
             return res.status(400).json({ message: 'Nenhum registro encontrado.' });
@@ -49,7 +49,7 @@ export const buscarPorId = async (req, res) => {
         if (isNaN(id)) {
             return res.status(400).json({ error: 'O ID enviado não é um número válido.' });
         }
-        const aluno = new AlunosModel(parseInt(id));
+        const aluno = new AlunoModel(parseInt(id));
         const data = await aluno.buscarPorId();
         if (!data) {
             return res.status(404).json({ error: 'Registro não encontrado.' });
@@ -68,14 +68,14 @@ export const atualizar = async (req, res) => {
         if (!req.body) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
-        const aluno = new AlunosModel(parseInt(id));
+        const aluno = new AlunoModel(parseInt(id));
         const exists = await aluno.buscarPorId();
         if (!exists) {
             return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
         }
-        if (req.body.nome !== undefined) alunos.nome = req.body.nome;
-         if (req.body.turma !== undefined) alunos.turma = req.body.turma;
-          if (req.body.materia !== undefined) alunos.materia = req.body.materia;
+        if (req.body.nome !== undefined) aluno.nome = req.body.nome;
+         if (req.body.turma !== undefined) aluno.turma = req.body.turma;
+          if (req.body.materia !== undefined) aluno.materia = req.body.materia;
 
 
         const data = await aluno.atualizar();
@@ -94,7 +94,7 @@ export const deletar = async (req, res) => {
             return res.status(400).json({ error: 'ID inválido.' });
         }
 
-      const aluno= new AlunosModel(parseInt(id));
+      const aluno= new AlunoModel(parseInt(id));
 
         const exists = await aluno.buscarPorId();
         if (!exists) {
