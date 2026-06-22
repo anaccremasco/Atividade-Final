@@ -1,32 +1,34 @@
 import prisma from '../lib/services/prismaClient.js';
 
 export default class ExemploModel {
-    constructor({ id = null, nome, estado = true, preco = null } = {}) {
+    constructor({ id = null, nome, turma, materia, foto = null} = {}) {
         this.id = id;
         this.nome = nome;
-        this.estado = estado;
-        this.preco = preco;
+        this.turma = turma;
+        this.materia = materia;
+        this.foto = foto;
     }
 
     async criar() {
-        return prisma.exemplo.create({
+        return prisma.alunos.create({
             data: {
                 nome: this.nome,
-                estado: this.estado,
-                preco: this.preco,
+                turma: this.turma,
+                materia: this.materia,
+                foto: this.foto
             },
         });
     }
 
     async atualizar() {
-        return prisma.exemplo.update({
+        return prisma.alunos.update({
             where: { id: this.id },
-            data: { nome: this.nome, estado: this.estado, preco: this.preco },
+            data: { nome: this.nome, turma: this.turma, materia: this.materia, foto: this.foto},
         });
     }
 
     async deletar() {
-        return prisma.exemplo.delete({ where: { id: this.id } });
+        return prisma.alunos.delete({ where: { id: this.id } });
     }
 
     static async buscarTodos(filtros = {}) {
@@ -35,18 +37,18 @@ export default class ExemploModel {
         if (filtros.nome) {
             where.nome = { contains: filtros.nome, mode: 'insensitive' };
         }
-        if (filtros.estado !== undefined) {
-            where.estado = filtros.estado === 'true';
+        if (filtros.turma) {
+            where.turma = { contains: filtros.turma, mode: 'insensitive' };
         }
-        if (filtros.preco !== undefined) {
-            where.preco = parseFloat(filtros.preco);
+        if (filtros.materia) {
+            where.materia = { contains: filtros.materia, mode: 'insensitive' };
         }
 
-        return prisma.exemplo.findMany({ where });
+        return prisma.alunos.findMany({ where });
     }
 
     static async buscarPorId(id) {
-        const data = await prisma.exemplo.findUnique({ where: { id } });
+        const data = await prisma.alunos.findUnique({ where: { id } });
         if (!data) {
             return null;
         }
