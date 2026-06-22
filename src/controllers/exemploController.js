@@ -79,8 +79,9 @@ export const atualizar = async (req, res) => {
         }
 
         const alunos = await AlunosModel.buscarPorId(parseInt(id));
+        const exists = await exemplo.buscarPorId();
 
-        if (!alunos) {
+        if (!exists) {
             return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
         }
 
@@ -113,15 +114,17 @@ export const deletar = async (req, res) => {
 
         const alunos = await AlunosModel.buscarPorId(parseInt(id));
 
-        if (!alunos) {
+        const exists = await alunos.buscarPorId();
+        if (!exists) {
             return res.status(404).json({ error: 'Registro não encontrado para deletar.' });
         }
-
-        await alunos.deletar();
-
-        return res.status(200).json({ message: `O registro "${alunos.nome}" foi deletado com sucesso!`, deletado: alunos });
+        await exemplo.deletar();
+        res.json({
+            message: `O registro "${exists.nome}" foi deletado com sucesso!`,
+            deletado: exists,
+        });
     } catch (error) {
         console.error('Erro ao deletar:', error);
-        return res.status(500).json({ error: 'Erro ao deletar registro.' });
+        res.status(500).json({ error: 'Erro ao deletar registro.' });
     }
 };
