@@ -7,13 +7,6 @@ const tiposPermitidos = [
     'image/png',
     'image/webp',
     'image/gif',
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'text/plain',
-    'text/csv',
 ];
 
 const fileFilter = (req, file, cb) => {
