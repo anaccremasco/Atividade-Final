@@ -46,19 +46,14 @@ export const buscarTodos = async (req, res) => {
 export const buscarPorId = async (req, res) => {
     try {
         const { id } = req.params;
-
         if (isNaN(id)) {
             return res.status(400).json({ error: 'O ID enviado não é um número válido.' });
         }
-
-        const alunos = await AlunosModel.buscarPorId;
+        const alunos = new AlunosModel(parseInt(id));
         const data = await alunos.buscarPorId();
-        parseInt(id);
-
         if (!data) {
             return res.status(404).json({ error: 'Registro não encontrado.' });
         }
-
         res.json({ data });
     } catch (error) {
         console.error('Erro ao buscar:', error);
