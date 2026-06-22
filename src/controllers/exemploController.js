@@ -94,7 +94,7 @@ export const deletar = async (req, res) => {
             return res.status(400).json({ error: 'ID inválido.' });
         }
 
-        const alunos = await AlunosModel.buscarPorId(parseInt(id));
+      const alunos= new AlunosModel(parseInt(id));
 
         const exists = await alunos.buscarPorId();
         if (!exists) {
