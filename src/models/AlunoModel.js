@@ -10,7 +10,7 @@ export default class ExemploModel {
     }
 
     async criar() {
-        return prisma.alunos.create({
+        return prisma.aluno.create({
             data: {
                 nome: this.nome,
                 turma: this.turma,
@@ -21,14 +21,14 @@ export default class ExemploModel {
     }
 
     async atualizar() {
-        return prisma.alunos.update({
+        return prisma.aluno.update({
             where: { id: this.id },
             data: { nome: this.nome, turma: this.turma, materia: this.materia, foto: this.foto},
         });
     }
 
     async deletar() {
-        return prisma.alunos.delete({ where: { id: this.id } });
+        return prisma.aluno.delete({ where: { id: this.id } });
     }
 
     static async buscarTodos(filtros = {}) {
@@ -44,11 +44,11 @@ export default class ExemploModel {
             where.materia = { contains: filtros.materia, mode: 'insensitive' };
         }
 
-        return prisma.alunos.findMany({ where });
+        return prisma.aluno.findMany({ where });
     }
 
     static async buscarPorId(id) {
-        const data = await prisma.alunos.findUnique({ where: { id } });
+        const data = await prisma.aluno.findUnique({ where: { id } });
         if (!data) {
             return null;
         }
