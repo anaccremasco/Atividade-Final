@@ -62,40 +62,27 @@ export const buscarPorId = async (req, res) => {
 };
 
 export const atualizar = async (req, res) => {
-    try {
+     try {
         const { id } = req.params;
-
-        if (isNaN(id)) {
-            return res.status(400).json({ error: 'ID inválido.' });
-        }
-
+        if (isNaN(id)) return res.status(400).json({ error: 'ID inválido.' });
         if (!req.body) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
-
-        const alunos = await AlunosModel.buscarPorId(parseInt(id));
-        const exists = await exemplo.buscarPorId();
-
+        const alunos = new AlunosModel(parseInt(id));
+        const exists = await alunos.buscarPorId();
         if (!exists) {
             return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
         }
+        if (req.body.nome !== undefined) alunos.nome = req.body.nome;
+         if (req.body.turma !== undefined) alunos.turma = req.body.turma;
+          if (req.body.materia !== undefined) alunos.materia = req.body.materia;
 
-        if (req.body.nome !== undefined) {
-            alunos.nome = req.body.nome;
-        }
-        if (req.body.turma !== undefined) {
-            alunos.turma = req.body.turma;
-        }
-         if (req.body.materia !== undefined) {
-            alunos.materia = req.body.materia;
-        }
 
         const data = await alunos.atualizar();
-
-        return res.status(200).json({ message: `O registro "${data.nome}" foi atualizado com sucesso!`, data });
+        res.json({ message: `O registro "${data.nome}" foi atualizado com sucesso!`, data });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
-        return res.status(500).json({ error: 'Erro ao atualizar registro.' });
+        res.status(500).json({ error: 'Erro ao atualizar registro.' });
     }
 };
 
@@ -113,7 +100,7 @@ export const deletar = async (req, res) => {
         if (!exists) {
             return res.status(404).json({ error: 'Registro não encontrado para deletar.' });
         }
-        await exemplo.deletar();
+        await alunos.deletar();
         res.json({
             message: `O registro "${exists.nome}" foi deletado com sucesso!`,
             deletado: exists,
