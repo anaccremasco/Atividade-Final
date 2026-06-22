@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 
 // Rotas
 
-app.use('/api/alunos', apiKey, alunosRoutes);
+app.use('/api/alunos', alunosRoutes);
 app.use('/api/alunos', apiKey, arquivoRoutes);
 
 

@@ -51,16 +51,18 @@ export const buscarPorId = async (req, res) => {
             return res.status(400).json({ error: 'O ID enviado não é um número válido.' });
         }
 
-        const alunos = await AlunosModel.buscarPorId(parseInt(id));
+        const alunos = await AlunosModel.buscarPorId;
+        const data = await alunos.buscarPorId();
+        parseInt(id);
 
-        if (!alunos) {
+        if (!data) {
             return res.status(404).json({ error: 'Registro não encontrado.' });
         }
 
-        return res.status(200).json({ data: alunos });
+        res.json({ data });
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        return res.status(500).json({ error: 'Erro ao buscar registro.' });
+        res.status(500).json({ error: 'Erro ao buscar registro.' });
     }
 };
 
