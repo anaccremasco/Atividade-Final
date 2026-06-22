@@ -52,6 +52,6 @@ export default class AlunoModel {
         if (!data) {
             return null;
         }
-        return new AlunosModel(data);
+        return new AlunoModel(data);
     }
 }
