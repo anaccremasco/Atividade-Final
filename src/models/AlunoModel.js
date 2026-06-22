@@ -52,6 +52,6 @@ export default class ExemploModel {
         if (!data) {
             return null;
         }
-        return new ExemploModel(data);
+        return new AlunosModel(data);
     }
 }
