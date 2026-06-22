@@ -1,4 +1,4 @@
-import AlunoModel from '../models/AlunoModel.js';
+import AlunosModel from '../models/AlunoModel.js';
 
 export const criar = async (req, res) => {
     try {
@@ -6,20 +6,20 @@ export const criar = async (req, res) => {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
 
-        const { nome, turma, materia } = req.body;
+        const { nome, turma, materia, foto } = req.body;
 
-        if (!nome){
+        if (!nome) {
             return res.status(400).json({ error: 'O campo "nome" é obrigatório!' });
         }
-         if (!turma){
+        if (turma === undefined || turma === null) {
             return res.status(400).json({ error: 'O campo "turma" é obrigatório!' });
         }
-         if (!materia){
+        if (materia === undefined || materia === null) {
             return res.status(400).json({ error: 'O campo "materia" é obrigatório!' });
-         }
+        }
 
-        const aluno = new AlunoModel({ nome, turma, materia});
-        const data = await aluno.criar();
+        const alunos = new AlunosModel({ nome, materia, turma, foto });
+        const data = await alunos.criar();
 
         return res.status(201).json({ message: 'Registro criado com sucesso!', data });
     } catch (error) {
@@ -30,7 +30,7 @@ export const criar = async (req, res) => {
 
 export const buscarTodos = async (req, res) => {
     try {
-        const registros = await AlunoModel.buscarTodos(req.query);
+        const registros = await AlunosModel.buscarTodos(req.query);
 
         if (!registros || registros.length === 0) {
             return res.status(400).json({ message: 'Nenhum registro encontrado.' });
@@ -46,43 +46,60 @@ export const buscarTodos = async (req, res) => {
 export const buscarPorId = async (req, res) => {
     try {
         const { id } = req.params;
+
         if (isNaN(id)) {
             return res.status(400).json({ error: 'O ID enviado não é um número válido.' });
         }
-        const aluno = new AlunoModel(parseInt(id));
-        const data = await aluno.buscarPorId();
-        if (!data) {
+
+        const alunos = await AlunosModel.buscarPorId(parseInt(id));
+
+        if (!alunos) {
             return res.status(404).json({ error: 'Registro não encontrado.' });
         }
-        res.json({ data });
+
+        return res.status(200).json({ data: alunos });
     } catch (error) {
         console.error('Erro ao buscar:', error);
-        res.status(500).json({ error: 'Erro ao buscar registro.' });
+        return res.status(500).json({ error: 'Erro ao buscar registro.', error });
     }
 };
 
 export const atualizar = async (req, res) => {
-     try {
+    try {
         const { id } = req.params;
-        if (isNaN(id)) return res.status(400).json({ error: 'ID inválido.' });
+
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'ID inválido.' });
+        }
+
         if (!req.body) {
             return res.status(400).json({ error: 'Corpo da requisição vazio. Envie os dados!' });
         }
-        const aluno = new AlunoModel(parseInt(id));
-        const exists = await aluno.buscarPorId();
-        if (!exists) {
+
+        const alunos = await AlunosModel.buscarPorId(parseInt(id));
+
+        if (!alunos) {
             return res.status(404).json({ error: 'Registro não encontrado para atualizar.' });
         }
-        if (req.body.nome !== undefined) aluno.nome = req.body.nome;
-         if (req.body.turma !== undefined) aluno.turma = req.body.turma;
-          if (req.body.materia !== undefined) aluno.materia = req.body.materia;
 
+        if (req.body.nome !== undefined) {
+            alunos.nome = req.body.nome;
+        }
+        if (req.body.materia !== undefined) {
+            alunos.materia = req.body.materia;
+        }
+        if (req.body.turma !== undefined) {
+            alunos.turma = req.body.turma;
+        }
 
-        const data = await aluno.atualizar();
-        res.json({ message: `O registro "${data.nome}" foi atualizado com sucesso!`, data });
+        const data = await alunos.atualizar();
+
+        return res
+            .status(200)
+            .json({ message: `O registro "${data.nome}" foi atualizado com sucesso!`, data });
     } catch (error) {
         console.error('Erro ao atualizar:', error);
-        res.status(500).json({ error: 'Erro ao atualizar registro.' });
+        return res.status(500).json({ error: 'Erro ao atualizar registro.', error });
     }
 };
 
@@ -94,19 +111,22 @@ export const deletar = async (req, res) => {
             return res.status(400).json({ error: 'ID inválido.' });
         }
 
-      const aluno= new AlunoModel(parseInt(id));
+        const alunos = await AlunosModel.buscarPorId(parseInt(id));
 
-        const exists = await aluno.buscarPorId();
-        if (!exists) {
+        if (!alunos) {
             return res.status(404).json({ error: 'Registro não encontrado para deletar.' });
         }
-        await aluno.deletar();
-        res.json({
-            message: `O registro "${exists.nome}" foi deletado com sucesso!`,
-            deletado: exists,
-        });
+
+        await alunos.deletar();
+
+        return res
+            .status(200)
+            .json({
+                message: `O registro "${alunos.nome}" foi deletado com sucesso!`,
+                deletado: alunos,
+            });
     } catch (error) {
         console.error('Erro ao deletar:', error);
-        res.status(500).json({ error: 'Erro ao deletar registro.' });
+        return res.status(500).json({ error: 'Erro ao deletar registro.' });
     }
 };
