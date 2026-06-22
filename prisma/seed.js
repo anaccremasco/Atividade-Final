@@ -16,7 +16,7 @@ async function main() {
 
     console.log('📦 Inserindo novos registros...');
 
-    await prisma.alunos.createMany({
+    await prisma.aluno.createMany({
         data: [
             { nome: 'Exemplo Alphas', turma: '2tds1', materia: 'Back-end' },
             { nome: 'Exemplo Beta', turma: '2tds2', materia: 'Front-end' },
